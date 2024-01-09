@@ -1,9 +1,9 @@
 # Inputs
 linear_svm.mat <br\>
-X_test            900x2             14400  double <br\>
-X_train           100x2              1600  double <br\>
-labels_test       900x1              7200  double <br\>
-labels_train      100x1               800  double<br\>
+X_test            900x2             14400  double <\br>
+X_train           100x2              1600  double <\br>
+labels_test       900x1              7200  double <\br>
+labels_train      100x1               800  double<\br>
 
 # Outputs
 See terminal output for full description of the various evaluation metrics.
