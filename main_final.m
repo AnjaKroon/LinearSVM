@@ -20,18 +20,11 @@ whos
 %% HARD SVM CVX
 disp(['-------- Solving with CVX solver --------']);
 % Solve and plot on training set
-% [w_cvx, b_cvx] = solve_cvx(X_train, labels_train);
-%plotting(X_train, labels_train, w_cvx, b_cvx, 'CVX train: ');
-%disp(['-------- Results CVX train --------']);
-%result_cvx_train = eval(X_train, labels_train, w_cvx, b_cvx);
-%disp("Objective Function Value: " + num2str(calc_opt(w_cvx)));
-
-% Solve and plot on test set
-[w_cvx_test, b_cvx_test] = solve_cvx(X_test, labels_test);
-plotting(X_test, labels_test, w_cvx_test, b_cvx_test, 'CVX test: ');
-disp(['-------- Results CVX test --------']);
-result_cvx_test = eval(X_test, labels_test, w_cvx_test, b_cvx_test);
-disp("Objective Function Value: " + num2str(calc_opt(w_cvx_test)));
+[w_cvx, b_cvx] = solve_cvx(X_train, labels_train);
+plotting(X_train, labels_train, w_cvx, b_cvx, 'CVX train: ');
+disp(['-------- Results CVX train --------']);
+result_cvx_train = eval(X_train, labels_train, w_cvx, b_cvx);
+disp("Objective Function Value: " + num2str(calc_opt(w_cvx)));
 
 
 %% Soft SVM Gradient Descent
@@ -43,76 +36,44 @@ max_num_iter = 10000;
 epsilon = 0.001;
 
 % Solve and plot on training set
-%[w_grad, b_grad] = gradDesc(X_train, labels_train, C, lr, max_num_iter, epsilon);
-%plotting(X_train, labels_train, w_grad,b_grad, 'GD train: ');
-%disp(['-------- Results GD train --------']);
-%result_grad_train = eval(X_train, labels_train, w_grad, b_grad);
-%disp("Objective Function Value: " + num2str(calc_opt(w_grad)));
-
-% Solve and plot on test set
-[w_grad_test, b_grad_test] = gradDesc(X_train, labels_train, C, lr, max_num_iter, epsilon);
-plotting(X_test, labels_test, w_grad_test,b_grad_test, 'GD test: ');
-% plot_wts_b(w_set,b_set);
-disp(['-------- Results GD test --------']);
-result_grad_test = eval(X_test, labels_test, w_grad_test, b_grad_test);
-disp("Objective Function Value: " + num2str(calc_opt(w_grad_test)));
+[w_grad, b_grad] = gradDesc(X_train, labels_train, C, lr, max_num_iter, epsilon);
+plotting(X_train, labels_train, w_grad,b_grad, 'GD train: ');
+disp(['-------- Results GD train --------']);
+result_grad_train = eval(X_train, labels_train, w_grad, b_grad);
+disp("Objective Function Value: " + num2str(calc_opt(w_grad)));
 
 
 %% Hard SVM Newton Step with Log Barrier
 disp(['-------- Solving with Log Barrier NT --------']);
 % TRAIN SET
 % Finding feasible point
-%[w_feas,b_feas] = solve_feasible(X_train,labels_train);
-%plotting(X_train, labels_train, w_feas,b_feas, 'nt train feasible point: ');
+[w_feas,b_feas] = solve_feasible(X_train,labels_train);
+plotting(X_train, labels_train, w_feas,b_feas, 'nt train feasible point: ');
 
-% Initialize hyperparams
-t=0.075;
-iter_t=9;
-mu=0.97;
-
-%[w_hsvm_nt, b_hsvm_nt, w_set_hsvm_nt, b_set_hsvm_nt, cost] = hard_svm_nt(X_train, labels_train, w_feas, b_feas, t, mu, iter_t);
-% disp("Objective Function Value: " + num2str(calc_opt(w_hsvm_nt)));
-%plotting(X_train, labels_train, w_feas, b_feas, 'feasible initial point: ');
-%plotting(X_train, labels_train, w_hsvm_nt, b_hsvm_nt, 'NT: ');
-%plot_wts_b(w_set_hsvm_nt,b_set_hsvm_nt);
-%disp(['-------- Results NT train --------']);
-%result_grad_test = eval(X_test, labels_test, w_hsvm_nt, b_hsvm_nt);
-%disp("Objective Function Value: " + num2str(calc_opt(w_hsvm_nt)));
-
-
-% TEST SET
-% Finding feasible point
-[w_feas_test, b_feas_test] = solve_feasible(X_test, labels_test);
-plotting(X_test, labels_test, w_feas_test, b_feas_test, 'NT test feasible point: ');
-
-% Initialize hyperparams
-t=0.0099;
-iter_t=25;
-mu=0.97;
-
-[w_hsvm_nt_test, b_hsvm_nt_test, w_set_hsvm_nt_test, b_set_hsvm_nt_test, cost_test] = hard_svm_nt(X_test, labels_test, w_feas_test, b_feas_test, t, mu, iter_t);
-plotting(X_test, labels_test, w_hsvm_nt_test, b_hsvm_nt_test, 'NT: ');
+%Initialize hyperparams
+t=1;
+iter_t=3000;
+mu=1.001;
+[w_hsvm_nt, b_hsvm_nt, w_set_hsvm_nt, b_set_hsvm_nt, cost] = hard_svm_nt(X_train, labels_train, w_feas, b_feas, t, mu, iter_t);
+disp("Objective Function Value: " + num2str(calc_opt(w_hsvm_nt)));
+plotting(X_train, labels_train, w_feas, b_feas, 'feasible initial point: ');
+plotting(X_train, labels_train, w_hsvm_nt, b_hsvm_nt, 'NT: ');
+plotting(X_test, labels_test, w_hsvm_nt, b_hsvm_nt, 'NT: ');
+plot_wts_b(w_set_hsvm_nt,b_set_hsvm_nt);
 disp(['-------- Results NT train --------']);
-result_grad_test = eval(X_test, labels_test, w_hsvm_nt_test, b_hsvm_nt_test);
-disp("Objective Function Value: " + num2str(calc_opt(w_hsvm_nt_test)));
+result_grad_test = eval(X_test, labels_test, w_hsvm_nt, b_hsvm_nt);
+disp("Objective Function Value: " + num2str(calc_opt(w_hsvm_nt)));
+
 
 
 %% ANALYSIS
-%disp(['-------- TRAIN SET Analysis on Final Width --------']);
-%disp(['HARD SVM']);
-%svmdistances(X_train, labels_train, w_cvx, b_cvx,"-------- CVX train set distances:  --------")
-% svmdistances(X_train,labels_train, w_feas, b_feas,"-------- NT train set initial point distances:  --------")
-%svmdistances(X_train, labels_train, w_hsvm_nt, b_hsvm_nt,"-------- NT train set distances:  --------")
-%disp(['SOFT SVM']);
-%svmdistances(X_train, labels_train, w_grad, b_grad, "-------- GD train set distances:  --------")
-
-disp(['-------- TEST SET Analysis on Final Width --------']);
+disp(['-------- TRAIN SET Analysis on Final Width --------']);
 disp(['HARD SVM']);
-svmdistances(X_test, labels_test, w_cvx_test, b_cvx_test, "-------- CVX test set distances:  --------")
-svmdistances(X_test, labels_test, w_feas_test, b_feas_test, "-------- NT initial distances:  --------")
-svmdistances(X_test, labels_test, w_hsvm_nt_test, b_hsvm_nt_test, "-------- NT test set distances:  --------")
+svmdistances(X_train, labels_train, w_cvx, b_cvx,"-------- CVX train set distances:  --------")
+svmdistances(X_train,labels_train, w_feas, b_feas,"-------- NT train set initial point distances:  --------")
+svmdistances(X_train, labels_train, w_hsvm_nt, b_hsvm_nt,"-------- NT train set distances:  --------")
 disp(['SOFT SVM']);
-svmdistances(X_test, labels_test, w_grad_test, b_grad_test, "-------- GD test set distances:  --------")
+svmdistances(X_train, labels_train, w_grad, b_grad, "-------- GD train set distances:  --------")
 
 
 %% SUBFUNCTIONS
@@ -219,67 +180,76 @@ end
 
 %log barrier with the newton step
 function [w,b,w_array,b_array,cost]= hard_svm_nt(X,labels,w_feas,b_feas,t,mu,iter_t)
-    disp(['Solving hard SVM with Newton Step']);
-    tStart= cputime;
-    
-    % Initialize arrays
-    w_array=zeros(2,1);
-    b_array=zeros(1,1);
-    
-    % Set to incoming feasible values calculated by CVX
-    w=w_feas;
-    b=b_feas;
-    cost=0;
-    
-    for iter= 1:iter_t
-        if iter==1
-            num_iter2=15;
-        else
-            num_iter2=4;
+disp(['Solving hard SVM with Newton Step']);
+tStart= cputime;
+
+w_array=zeros(2,1);
+b_array=zeros(1,1);
+
+w=w_feas;
+b=b_feas;
+cost=0;
+for iter= 1:iter_t
+
+    for iter2=1:30
+        log_sum=0;
+        sum1=0;
+        sum2=0;
+        sum3=0;
+        sum4=0;
+        for i=1:length(X)
+            sum1=   sum1    +   (labels(i)*X(i,:)')./(labels(i)*(dot(w,X(i,:))+b)-1);
+            sum2=   sum2    +   (labels(i))./(labels(i)*(dot(w,X(i,:))+b)-1);
+            sum3=   sum3    +   (labels(i)*X(i,:)')*(labels(i)*X(i,:)')'  ./ ((1-labels(i)*(dot(w,X(i,:))+b)).^2);
+            sum4=   sum4    +   labels(i).^2 ./ ((1-labels(i)*(dot(w,X(i,:))+b)).^2);
+
+            log_sum = log_sum  + log((labels(i)*(dot(w,X(i,:))+b)-1));
         end
-        for iter2=1:num_iter2
-            log_sum=0;
-            sum1=0;
-            sum2=0;
-            sum3=0;
-            sum4=0;
-            for i=1:length(X)
-                sum1=   sum1    +   (labels(i)*X(i,:)')./(labels(i)*(dot(w,X(i,:))+b)-1);
-                sum2=   sum2    +   (labels(i))./(labels(i)*(dot(w,X(i,:))+b)-1);
-                sum3=   sum3    +   (labels(i)*X(i,:)')*(labels(i)*X(i,:)')'  ./ ((1-labels(i)*(dot(w,X(i,:))+b)).^2);
-                sum4=   sum4    +   labels(i).^2 ./ ((1-labels(i)*(dot(w,X(i,:))+b)).^2);
-    
-                log_sum = log_sum  + log((labels(i)*(dot(w,X(i,:))+b)-1));
-            end
-            
-            % Updating the gradients
-            dw=  t*w -  sum1;
-            db=   -sum2;
-            
-            % Updating the second deriv
-            d2w= t.*eye(2)  + sum3;
-            d2b= sum4;
-            
-            % Calculating Newton step values
-            wnt = -d2w\dw;
-            bnt = -d2b\db;
-            
-            % Updating Newton step values
-            w=  w   +    wnt;
-            b=  b   +    bnt;
-            
-            % Calculate cost value and store the value of w and b into long
-            % term tracking
-            cost_iter= t*norm(w).^2 - log_sum;
-            cost=vertcat(cost,cost_iter);
-            w_array=horzcat(w_array,w);
-            b_array=horzcat(b_array,b);
+
+        dw=  t*w -  sum1;
+        db=   -sum2;
+
+        d2w= t.*eye(2)  + sum3;
+        d2b= sum4;
+
+
+        wnt= -inv(d2w)*dw;
+        bnt= -inv(d2b)*db;
+
+
+
+
+        if(dw==0.0)
+            disp(num2str("dw at 0")+dw);
+            break;
         end
-        % Update t value
-        t= mu*t;
+
+        %stopping criterion for each centreing step: if gradient is 0
+
+
+        w=  w   +  0.1*  wnt;
+        b=  b   +  0.1*  bnt;
+
+
+        cost_iter= t*norm(w).^2 - log_sum;
+        cost=vertcat(cost,cost_iter);
+
+        w_array=horzcat(w_array,w);
+        b_array=horzcat(b_array,b);
+
+
+
+
     end
-    tEnd = cputime - tStart;
-    disp(['Total CPU time: ' num2str(tEnd)]);
+    t= mu*t;
+
+end
+
+
+tEnd = cputime - tStart;
+
+disp(['Total CPU time: ' num2str(tEnd)]);
+
 end
 
 
@@ -393,7 +363,7 @@ end
 
 %calculates the objective function value
 function opt_point =calc_opt(w)
-    opt_point = norm(w);
+    opt_point = norm(w)/2;
 end
 
 %calculates the distance between the support vectors and hyperplane
